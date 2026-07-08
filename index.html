@@ -112,6 +112,14 @@ const maps = [
     kind: "Official map",
     url: "https://keiranpoly2611.github.io/HutanPantai-Map-FS25/",
     thumbGradient: "linear-gradient(135deg, #164e63, #0e7490, #2dd4bf)"
+  },
+  {
+    name: "Riverbend Springs",
+    desc: "Official FS25 map. 93 fields, same tracking tools and Precision Farming guide as every other map here.",
+    fields: "93",
+    kind: "Official map",
+    url: "https://keiranpoly2611.github.io/RiverbendSprings-Map-FS25/",
+    thumbGradient: "linear-gradient(135deg, #713f12, #a16207, #facc15)"
   }
 ];
 
@@ -127,9 +135,7 @@ grid.innerHTML = maps.map(m => `
     </div>
     <span class="open"><i class="ti ti-map-2" aria-hidden="true"></i> Open map</span>
   </a>
-`).join('') + `
-  <div class="add-card"><i class="ti ti-map-plus" aria-hidden="true"></i>More maps coming soon</div>
-`;
+`).join('');
 </script>
 </body>
 </html>
