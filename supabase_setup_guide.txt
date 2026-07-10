@@ -5,29 +5,47 @@ Previously, each map (Kinlaig, Zielonka, Hutan Pantai, Riverbend Springs) had it
 own Google Apps Script deployment and its own Web App URL. This replaces all four
 with one shared backend, so there is only one thing to set up, ever.
 
-What friends experience after this is set up:
-Nothing new to configure - they just open a map, and Cloud Sync already knows
-where to connect. They only need the shared edit code (still Bubblegum1, same as
-before) to press "Load from cloud" or "Upload current map".
+Rooms - anyone can now share this with their own friends:
+Each map supports a "default room" (that's Keiran's own group, still using the
+same Bubblegum1 edit code as always) plus any number of other rooms. Anyone
+visiting a map can press "Create a new room" in the Cloud tab, pick (or
+generate) a room code and their own edit code, and that room is created
+instantly - no admin step, nothing for you to do per new group. They then
+share their room code + edit code with their own friends the same way you
+share Bubblegum1 with yours, and everyone uses the normal Load/Upload controls
+with that room code entered.
 
-One-time setup (you only, not friends):
+What friends experience after this is set up:
+Nothing new to configure for Keiran's existing group - they leave Room code
+blank, and Cloud Sync already knows where to connect. They only need the shared
+edit code (still Bubblegum1) to press "Load from cloud" or "Upload current map".
+
+One-time setup (you only, not friends, and only once ever):
 1. Go to supabase.com and sign in (free tier is enough).
 2. Click "New project", pick a name/password/region, and wait ~2 minutes for it
    to finish provisioning.
 3. Open the SQL Editor (left sidebar) > New query.
 4. Paste the full contents of supabase_setup.sql (in this same folder) and click
-   Run. This creates the table, locks it down, and seeds all 4 maps with the
-   Bubblegum1 edit code.
-5. Go to Project Settings > API. Copy the "Project URL" and the "anon public" key.
+   Run. This creates the table, locks it down, and seeds the default room for
+   all 4 maps with the Bubblegum1 edit code.
+5. Go to Project Settings > API Keys. Copy the "Project URL" and the
+   "anon public" (or "publishable") key.
 6. Send both of those back to Claude - it bakes them into all 4 map sites and
    pushes the update. After that, this setup is done for good; you never touch
-   Supabase again unless you want to change the edit code or add a new map.
+   Supabase again unless you want to change your own group's edit code.
 
-To change the shared edit code later:
+If you already ran an older version of supabase_setup.sql (before rooms
+existed), don't re-run it - run supabase_migration_rooms.sql instead, then
+supabase_migration_create_room.sql. Both upgrade the existing table/functions
+in place without losing any data; your 4 existing rows automatically become
+each map's default room, and creating a room becomes its own explicit action
+instead of happening silently on first upload.
+
+To change your own group's edit code later:
 Run this in the SQL Editor (swap NEWCODE and the map_id you want to change):
-  update public.map_saves set access_code = 'NEWCODE' where map_id = 'kinlaig';
+  update public.map_saves set access_code = 'NEWCODE' where map_id = 'kinlaig' and room_code = '';
 
-To add a new map later:
-  insert into public.map_saves (map_id, access_code) values ('newmapid', 'Bubblegum1');
+To add a new official map later:
+  insert into public.map_saves (map_id, room_code, access_code) values ('newmapid', '', 'Bubblegum1');
 Then give the new map's index.html the same SUPABASE_URL/ANON_KEY and a matching
-map_id constant - no new Apps Script deployment needed.
+CLOUD_MAP_ID constant - no new Apps Script deployment needed.
