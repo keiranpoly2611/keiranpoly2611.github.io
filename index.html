@@ -4,140 +4,22 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Interactive Maps</title>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.44.0/dist/tabler-icons.min.css" />
+<link rel="canonical" href="https://fs25interactive.github.io/" />
+<meta http-equiv="refresh" content="0; url=https://fs25interactive.github.io/" />
 <style>
-  :root {
-    --bg:#0b0f14; --panel:#111827; --line:#2a3441; --text:#f1f5f2; --muted:#8b96a5;
-    --accent:#1d9e75; --accent-rgb:29,158,117;
-    --ease:cubic-bezier(.2,.8,.2,1);
-  }
-  * { box-sizing:border-box; }
+  :root { --bg:#0b0f14; --text:#f1f5f2; --muted:#8b96a5; --accent:#1d9e75; }
   html, body { margin:0; min-height:100%; font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background:var(--bg); color:var(--text); }
-  * { scrollbar-width:thin; scrollbar-color:rgba(148,163,184,.4) transparent; }
-  ::-webkit-scrollbar { width:10px; height:10px; }
-  ::-webkit-scrollbar-thumb { background:rgba(148,163,184,.35); border-radius:999px; border:2px solid transparent; background-clip:padding-box; }
-  body {
-    background:
-      radial-gradient(1100px 600px at 15% -10%, rgba(var(--accent-rgb),.16), transparent 60%),
-      radial-gradient(900px 500px at 100% 0%, rgba(56,189,248,.10), transparent 55%),
-      var(--bg);
-  }
-  .wrap { max-width:1040px; margin:0 auto; padding:56px 24px 80px; animation:fadeIn .4s var(--ease); }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
-  header { text-align:center; margin-bottom:44px; }
-  header .badge {
-    display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; letter-spacing:.03em;
-    color:#bdf5e0; background:rgba(var(--accent-rgb),.14); border:1px solid rgba(var(--accent-rgb),.4);
-    border-radius:999px; padding:5px 12px; margin-bottom:16px;
-  }
-  h1 { font-size:34px; margin:0 0 10px; letter-spacing:-.01em; }
-  header p { color:var(--muted); font-size:15px; max-width:520px; margin:0 auto; line-height:1.5; }
-  .grid { display:grid; grid-template-columns:1fr; gap:20px; }
-  @media (min-width:560px) { .grid { grid-template-columns:repeat(2, 1fr); } }
-  @media (min-width:900px) { .grid { grid-template-columns:repeat(4, 1fr); } }
-  .card {
-    position:relative; overflow:hidden; display:flex; flex-direction:column;
-    background:rgba(31,41,55,.7); border:1px solid rgba(148,163,184,.32); border-radius:18px;
-    padding:22px; box-shadow:0 16px 40px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.03);
-    transition:transform .18s var(--ease), border-color .18s var(--ease), box-shadow .18s var(--ease);
-    text-decoration:none; color:inherit;
-  }
-  .card::before { content:''; position:absolute; inset:0 0 auto 0; height:1px; background:linear-gradient(90deg, transparent, rgba(93,202,165,.55), transparent); }
-  .card:hover { transform:translateY(-3px); border-color:rgba(var(--accent-rgb),.55); box-shadow:0 22px 50px rgba(0,0,0,.4), 0 0 0 1px rgba(var(--accent-rgb),.2); }
-  .card .thumb {
-    height:120px; border-radius:12px; margin-bottom:16px; background-size:cover; background-position:center;
-    border:1px solid rgba(148,163,184,.25); position:relative; overflow:hidden;
-  }
-  .card .thumb::after { content:''; position:absolute; inset:0; background:linear-gradient(180deg, rgba(11,15,20,0) 40%, rgba(11,15,20,.75)); }
-  .card h2 { font-size:19px; margin:0 0 6px; }
-  .card p.desc { color:var(--muted); font-size:13.5px; line-height:1.5; margin:0 0 16px; flex:1; }
-  .card .stats { display:flex; gap:16px; margin-bottom:16px; }
-  .card .stat b { display:block; font-size:16px; }
-  .card .stat span { display:block; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.03em; }
-  .card .open {
-    display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700; font-size:14px;
-    background:linear-gradient(180deg, #1d9e75, #0f6e56); border:1px solid #5dcaa5; border-radius:11px;
-    padding:10px; transition:transform .12s var(--ease), box-shadow .18s var(--ease);
-  }
-  .card:hover .open { box-shadow:0 10px 22px rgba(var(--accent-rgb),.4); }
-  .card:active .open { transform:scale(.97); }
-  .add-card {
-    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;
-    border:1px dashed rgba(148,163,184,.35); border-radius:18px; padding:22px; color:var(--muted); font-size:13.5px;
-    min-height:100%;
-  }
-  .add-card i { font-size:26px; opacity:.6; }
-  footer { text-align:center; margin-top:56px; color:var(--muted); font-size:12.5px; }
-  footer a { color:var(--accent); }
-  @media (max-width:520px) {
-    h1 { font-size:27px; }
-    .wrap { padding:40px 18px 60px; }
-  }
+  .wrap { display:flex; align-items:center; justify-content:center; min-height:100vh; padding:24px; text-align:center; }
+  a { color:var(--accent); }
+  p { color:var(--muted); }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <span class="badge"><i class="ti ti-tractor" aria-hidden="true"></i> Farming Simulator 25</span>
-    <h1>Interactive Maps</h1>
-    <p>Interactive field-management maps for keeping track of owners, crops, soil, and work &mdash; pick a map to open it.</p>
-  </header>
-
-  <div class="grid" id="mapGrid"></div>
-
-  <footer>Each map keeps its own save data and cloud sync &mdash; nothing here is shared between them.</footer>
+  <div>
+    <p>This page has moved.</p>
+    <p>Redirecting to <a href="https://fs25interactive.github.io/">https://fs25interactive.github.io/</a>&hellip;</p>
+  </div>
 </div>
-
-<script>
-// Add a new entry here whenever another map goes live - that's the only change needed.
-const maps = [
-  {
-    name: "Kinlaig",
-    desc: "Modded custom map. 48 fields + 27 land parcels, owner/crop/soil/work tracking, Precision Farming guide.",
-    fields: "75",
-    kind: "Modded map",
-    url: "https://keiranpoly2611.github.io/Kinlaig-Map-FS25/",
-    thumbGradient: "linear-gradient(135deg, #14532d, #166534, #1d9e75)"
-  },
-  {
-    name: "Zielonka",
-    desc: "Official FS25 map. 109 fields, same tracking tools and Precision Farming guide as every other map here.",
-    fields: "109",
-    kind: "Official map",
-    url: "https://keiranpoly2611.github.io/Zielonka-Map-FS25/",
-    thumbGradient: "linear-gradient(135deg, #1e3a5f, #1d6fa5, #38bdf8)"
-  },
-  {
-    name: "Hutan Pantai",
-    desc: "Official FS25 map. 80 fields, same tracking tools and Precision Farming guide as every other map here.",
-    fields: "80",
-    kind: "Official map",
-    url: "https://keiranpoly2611.github.io/HutanPantai-Map-FS25/",
-    thumbGradient: "linear-gradient(135deg, #164e63, #0e7490, #2dd4bf)"
-  },
-  {
-    name: "Riverbend Springs",
-    desc: "Official FS25 map. 93 fields, same tracking tools and Precision Farming guide as every other map here.",
-    fields: "93",
-    kind: "Official map",
-    url: "https://keiranpoly2611.github.io/RiverbendSprings-Map-FS25/",
-    thumbGradient: "linear-gradient(135deg, #713f12, #a16207, #facc15)"
-  }
-];
-
-const grid = document.getElementById('mapGrid');
-grid.innerHTML = maps.map(m => `
-  <a class="card" href="${m.url}">
-    <div class="thumb" style="background-image:${m.thumbGradient}"></div>
-    <h2>${m.name}</h2>
-    <p class="desc">${m.desc}</p>
-    <div class="stats">
-      <div class="stat"><b>${m.fields}</b><span>Fields</span></div>
-      <div class="stat"><b>${m.kind}</b><span>Type</span></div>
-    </div>
-    <span class="open"><i class="ti ti-map-2" aria-hidden="true"></i> Open map</span>
-  </a>
-`).join('');
-</script>
 </body>
 </html>
