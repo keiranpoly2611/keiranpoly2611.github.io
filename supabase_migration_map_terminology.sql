@@ -1,30 +1,7 @@
--- FS25 Maps - Universal Cloud Sync backend (Supabase)
--- Run this once, in full, in a NEW Supabase project's SQL Editor.
--- (If you already ran an older version of this file, use the migration
--- scripts instead - don't re-run this one.)
---
--- Supports public "maps" (shown to users as "Map code", internally still the
--- room_code column/param): anyone can create their own private one via the
--- "Create a new map" button (own map code + own edit code), then share both
--- with their friends to sync together. Leaving Map code blank on the
--- Load/Upload controls uses each site's default shared map.
-
-create table if not exists public.map_saves (
-  map_id text not null,
-  room_code text not null default '',
-  access_code text not null,
-  data jsonb,
-  updated_at timestamptz,
-  updated_by text,
-  primary key (map_id, room_code)
-);
-
-alter table public.map_saves enable row level security;
--- No policies are created on purpose: with RLS on and zero policies, PostgREST
--- (the anon/authenticated roles) cannot read or write this table directly at all.
--- The only way in is through the functions below, which check the shared
--- edit code themselves before touching any row.
-revoke all on public.map_saves from anon, authenticated;
+-- FS25 Maps - Rename "room" to "map" in user-facing error text
+-- Run this once, in a NEW query, in the SAME Supabase project. Purely cosmetic -
+-- same table, same columns, same logic, only the text shown in error messages
+-- changes (the UI already says "Map code" / "Create a new map" etc).
 
 create or replace function public.fs25_load_map(p_map_id text, p_code text, p_room_code text default '')
 returns table(data jsonb, updated_at timestamptz, updated_by text)
@@ -100,15 +77,3 @@ begin
   return query select v_created_at;
 end;
 $$;
-
-grant execute on function public.fs25_load_map(text, text, text) to anon, authenticated;
-grant execute on function public.fs25_save_map(text, text, jsonb, text, text) to anon, authenticated;
-grant execute on function public.fs25_create_room(text, text, text, text) to anon, authenticated;
-
--- Seed the default map for each of the 4 built-in sites.
-insert into public.map_saves (map_id, room_code, access_code, data, updated_at, updated_by) values
-  ('kinlaig', '', 'Bubblegum1', null, null, null),
-  ('zielonka', '', 'Bubblegum1', null, null, null),
-  ('hutanpantai', '', 'Bubblegum1', null, null, null),
-  ('riverbendsprings', '', 'Bubblegum1', null, null, null)
-on conflict (map_id, room_code) do nothing;
