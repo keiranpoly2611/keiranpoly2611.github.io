@@ -1,0 +1,33 @@
+FS25 Maps - Universal Cloud Sync Setup Guide (Supabase)
+
+What this replaces:
+Previously, each map (Kinlaig, Zielonka, Hutan Pantai, Riverbend Springs) had its
+own Google Apps Script deployment and its own Web App URL. This replaces all four
+with one shared backend, so there is only one thing to set up, ever.
+
+What friends experience after this is set up:
+Nothing new to configure - they just open a map, and Cloud Sync already knows
+where to connect. They only need the shared edit code (still Bubblegum1, same as
+before) to press "Load from cloud" or "Upload current map".
+
+One-time setup (you only, not friends):
+1. Go to supabase.com and sign in (free tier is enough).
+2. Click "New project", pick a name/password/region, and wait ~2 minutes for it
+   to finish provisioning.
+3. Open the SQL Editor (left sidebar) > New query.
+4. Paste the full contents of supabase_setup.sql (in this same folder) and click
+   Run. This creates the table, locks it down, and seeds all 4 maps with the
+   Bubblegum1 edit code.
+5. Go to Project Settings > API. Copy the "Project URL" and the "anon public" key.
+6. Send both of those back to Claude - it bakes them into all 4 map sites and
+   pushes the update. After that, this setup is done for good; you never touch
+   Supabase again unless you want to change the edit code or add a new map.
+
+To change the shared edit code later:
+Run this in the SQL Editor (swap NEWCODE and the map_id you want to change):
+  update public.map_saves set access_code = 'NEWCODE' where map_id = 'kinlaig';
+
+To add a new map later:
+  insert into public.map_saves (map_id, access_code) values ('newmapid', 'Bubblegum1');
+Then give the new map's index.html the same SUPABASE_URL/ANON_KEY and a matching
+map_id constant - no new Apps Script deployment needed.
